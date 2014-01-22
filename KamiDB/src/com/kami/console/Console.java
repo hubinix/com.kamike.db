@@ -34,13 +34,13 @@ public class Console {
             GenericCreator<TestTable> creator = new TestTableCreator(ts,"kamike");
             creator.init();
             ts.save();
-            
+           
             //查询测试
            TestTableReader tts=new TestTableReader("kamike");
            TestTable template=new TestTable();
            template.setCount(500);
            ArrayList<TestTable> testList=tts.find(template);
-           
+            System.out.println(tts.count());
             Transaction testTs = new MySQLTransaction();
             TestTableWriter ttw=new TestTableWriter(testTs,"kamike");
           
