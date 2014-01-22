@@ -293,7 +293,7 @@ public abstract class GenericSelect<T> {
 
         buffer.append(sql);
 
-        buffer.append(" ) c ");
+        buffer.append(" ) ___countsql ");
 
         return buffer.toString();
     }
