@@ -300,7 +300,7 @@ public abstract class GenericSelect<T> {
 
     public long count(ResultSet rs) throws SQLException {
         long sum = 0;
-        if (rs == null || rs.isClosed()) {
+        if (rs == null) {
             return 0;
         }
         if (rs.next()) {
@@ -313,7 +313,7 @@ public abstract class GenericSelect<T> {
 
     public ArrayList<T> fetch(ResultSet rs) throws SQLException {
         ArrayList<T> ret = new ArrayList<>();
-        if (rs == null || rs.isClosed()) {
+        if (rs == null ) {
             return ret;
         }
         T entity = null;
@@ -355,7 +355,7 @@ public abstract class GenericSelect<T> {
 
     public T fetchOnce(ResultSet rs) throws SQLException {
 
-        if (rs == null || rs.isClosed()) {
+        if (rs == null ) {
             return null;
         }
         T entity = null;

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public abstract class GenericReader<T> {
 
-    public abstract int count();
+    public abstract long count();
 
     protected String dbName;
 

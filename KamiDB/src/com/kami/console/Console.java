@@ -10,6 +10,7 @@ import com.kamike.db.GenericCreator;
 import com.kamike.db.MySQLTransaction;
 import com.kamike.db.Transaction;
 import com.kamike.message.EventInst;
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +34,37 @@ public class Console {
             GenericCreator<TestTable> creator = new TestTableCreator(ts,"kamike");
             creator.init();
             ts.save();
- 
+            
+            //查询测试
+           TestTableReader tts=new TestTableReader("kamike");
+           TestTable template=new TestTable();
+           template.setCount(500);
+           ArrayList<TestTable> testList=tts.find(template);
+           
+            Transaction testTs = new MySQLTransaction();
+            TestTableWriter ttw=new TestTableWriter(testTs,"kamike");
+          
+            
+            
+           for(TestTable test:testList)
+           {
+                System.out.println(test.getName()+":"+test.getCreateDate());
+               test.setName("修改修改测试");
+               ttw.edit(test);
+              
+           }
+           testTs.save();
+           
+           //修改完毕
+           
+        
+           ArrayList<TestTable> testList2=tts.find(template);
+           for(TestTable test:testList2)
+           {
+              
+               System.out.println(test.getName()+":"+test.getCreateDate());
+               
+           }
           
           
           
