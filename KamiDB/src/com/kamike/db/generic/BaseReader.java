@@ -16,10 +16,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
- * 
- * @author brin
- *  hubinix@gmail.com
+ *
+ *
+ * @author brin hubinix@gmail.com
  */
 public abstract class BaseReader<T> extends GenericReader<T> {
 
@@ -30,6 +29,48 @@ public abstract class BaseReader<T> extends GenericReader<T> {
     public abstract GenericSelect<T> createSelect();
 
     public abstract GenericSelect<T> createSelect(T t);
+
+    @Override
+    public long count() {
+        GenericSelect<T> select = createSelect();
+
+        ResultSet rs = null;
+        PreparedStatement ps = null;
+        Connection conn = null;
+
+        long ret = 0;
+        try {
+            conn = SysDbInst.getInstance().getDatabase().getSingleConnection();
+            ps = conn.prepareStatement(select.countSQL(select.rawSql(dbName)), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+            rs = ps.executeQuery();
+            ret = select.count(rs);
+
+        } catch (Exception e) {
+            ret = 0;
+            System.out.println(this.getClass().getName() + e.toString());
+
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                    rs = null;
+                }
+                if (ps != null) {
+                    ps.close();
+                    ps = null;
+                }
+                if (conn != null) {
+                    conn.close();
+                    conn = null;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(BaseReader.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return ret;
+    }
 
     @Override
     public ArrayList<T> find() {
@@ -43,7 +84,7 @@ public abstract class BaseReader<T> extends GenericReader<T> {
         ArrayList<T> ret = null;
         try {
             conn = SysDbInst.getInstance().getDatabase().getSingleConnection();
-            ps = conn.prepareStatement(select.rawSql(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ps = conn.prepareStatement(select.rawSql(dbName), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = ps.executeQuery();
             ret = select.fetch(rs);
 
@@ -85,9 +126,9 @@ public abstract class BaseReader<T> extends GenericReader<T> {
 
         try {
             conn = SysDbInst.getInstance().getDatabase().getSingleConnection();
-            ps = conn.prepareStatement(select.sql(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            int index=select.bind(ps);
-            
+            ps = conn.prepareStatement(select.sql(dbName), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            int index = select.bind(ps);
+
             rs = ps.executeQuery();
             entity = select.fetchOnce(rs);
 

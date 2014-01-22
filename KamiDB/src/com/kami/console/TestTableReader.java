@@ -37,47 +37,7 @@ public class TestTableReader extends BaseReader<TestTable> {
         return new TestTableSelect(t);
     }
 
-    @Override
-    public long count() {
-        GenericSelect<TestTable> select = createSelect();
-
-        ResultSet rs = null;
-        PreparedStatement ps = null;
-        Connection conn = null;
-
-        long ret = 0;
-        try {
-            conn = SysDbInst.getInstance().getDatabase().getSingleConnection();
-            ps = conn.prepareStatement(select.countSQL(select.rawSql(dbName)), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-
-            rs = ps.executeQuery();
-            ret = select.count(rs);
-
-        } catch (Exception e) {
-            ret =0;
-            System.out.println(this.getClass().getName() + e.toString());
-
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                    rs = null;
-                }
-                if (ps != null) {
-                    ps.close();
-                    ps = null;
-                }
-                if (conn != null) {
-                    conn.close();
-                    conn = null;
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(BaseReader.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        return ret;
-    }
+  
 
     @Override
     public ArrayList<TestTable> find(TestTable t) {
